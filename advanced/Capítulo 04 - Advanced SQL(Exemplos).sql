@@ -433,22 +433,71 @@ SELECT sup.last_name    sup,
 FROM employees sup
 JOIN employees sub 
 ON(sup.employee_id = sub.manager_id);
+-- com isso não temos como escolher a direção que queremos percorrer na hierarquia, não temos como escolher a partir de onde vamos ver
+
+-- LEVEL - pseudocoluna que indica a linha da hierarquia
 
 --Árvore de hierarquia  percorrida de baixo para cima:
-SELECT employee_id, last_name, job_id, manager_id
+SELECT employee_id, last_name, job_id, manager_id, LEVEL -- level 1 no Kochhar porque começa nele, ele é o primeiro nessa hierarquia
 FROM   employees
-START  WITH  last_name = 'Kochhar'
-CONNECT BY PRIOR manager_id = employee_id ;
+START  WITH  last_name = 'Kochhar' -- condição para início da hierarquia
+CONNECT BY PRIOR manager_id = employee_id ; -- conexão pela prioridade, olhando para o manager_id prioritariamente, olhamos os superiores
+-- olhando da FK para a PK
+-- procura o manager primeiro
 
 --Árvore  percorrida de cima para baixo:
 SELECT  last_name||' Responde para '|| 
-PRIOR   last_name "Ã?rvore de Cima para Baixo", 
-LEVEL   "NÃ­vel"
+PRIOR   last_name "Árvore de Cima para Baixo",  
+LEVEL   "lével"
 FROM    employees
 START   WITH employee_id = 100
-CONNECT BY PRIOR employee_id = manager_id;
+CONNECT BY PRIOR employee_id = manager_id; -- olhamos para os abaixo da hierarquia
+-- olhando da PK para a FK
+-- procura o employee primeiro
+
+-- a ordem depende da dependência relacional
+-- o PRIOR indica quem qual dependência vc vai olhar primeiro
+
 -----------------------------------------------------------------
 --CLÁUSULA WITH 
+-- CTE -> WITH, visão em memória
+-- cria uma view implícita que pode ser reutilizada na query
+
+WITH emp AS (
+    SELECT *
+    FROM employees
+)
+SELECT last_name FROM emp;
+
+CREATE OR REPLACE VIEW EMP AS (
+    SELECT *
+    FROM employees
+);
+SELECT last_name FROM emp;
+
+SELECT department_name, last_name
+FROM   employees e
+JOIN   departments d
+ON     e.department_id = d.department_id
+WHERE  d.department_id = 90;
+
+WITH emp AS (
+    SELECT last_name,
+           department_id dept_id
+    FROM   employees
+),
+dept AS (
+    SELECT department_id dept_id,
+           department_name
+    FROM   departments
+)
+SELECT department_name, last_name
+FROM   emp e
+JOIN   dept d
+ON     e.dept_id = d.dept_id
+WHERE  d.dept_id = 90; --nesse caso nem vale a pena, porque fica criando view para pouco dado
+-- ele é mais útil quando faz sentido guardar em memória os dados
+
 /* A cláusula WITH tem por característica facilitar a leitura da consulta, 
 apenas uma clásula por vez é avaliada mesmo se ela aparecer inúmeras vezes na consulta.
 
@@ -481,7 +530,21 @@ FROM   dept_costs
 WHERE  dept_total >( SELECT dept_avg
                      FROM   avg_cost )
 ORDER BY department_name;
+
+-- se queremos melhorar a performance, uma opção é os índices, mas precisamos lembrar que só vai ajudar se a cardinalidade não for muito alta
 -----------------------------------------------------------------
+
+-- Feature paga à parte, caro
+-- Particionamento:
+--     Se uma tabela tem muitos muitos dados, exemplo, décadas de dados, podemos particionar por range de data
+--          Nisso podemos salvar em discos separados cada partição, o que permite a Oracle saber onde ela vai buscar, ela só
+--          busca na partição que ela selecionar
+--          Outra coisa, dados mais antigos você pode usar só como disco de leitura, para salvar vai na partição atual
+
+-- Tablespace --> onde ficam as tabelas, elas ficam em discos, por isso cada disco tem uma certa quantidade de tablespaces
+--  Aí vamos criando tablespaces por disco
+--      Um disco tem os volumes físicos, PV, e a partir dele os Volume Groups VG, e vai montando a arquitetura do disco
+
 --Particionamento por faixa de valores (Range Partitioning)-Exemplo 
 /* Exemplo de criação de tabela particionada por faixa de valores 
 onde serão criadas quatro partições conforme o ano de realização dos pedidos*/
