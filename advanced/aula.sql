@@ -16,3 +16,8 @@
 */
 
 -- MERGE
+
+-- TODO insert em massa trabalha com SELECT
+
+--INSERT ALL
+-- o ALL só é opcional se tiver condição, sem ele é obrigatório ter na sintaxe
