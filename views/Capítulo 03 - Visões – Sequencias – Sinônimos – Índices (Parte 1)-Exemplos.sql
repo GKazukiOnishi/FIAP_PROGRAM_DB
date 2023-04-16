@@ -19,7 +19,7 @@ WHERE EMPLOYEE_ID=179;
 INSERT INTO EMPVU80
 VALUES (12345,'Xiuderico',10000); --não funciona nesse caso, isso porque o INSERT vai na tabela base, então se
     -- ela tiver constraint vai valer também
-    -- para usar todas as colunas NOT NULL e constraints precisam ser respetiadas
+    -- para usar: todas as colunas NOT NULL e constraints precisam ser respeitadas
 
 DESCRIBE employees;
 ROLLBACK;
@@ -109,3 +109,5 @@ AS SELECT	employee_id, last_name, job_id
 --INSERT, UPDATE, DELETE não roda
 
 DROP VIEW empvu80;
+DROP VIEW empvu10;
+DROP VIEW empvu20;
