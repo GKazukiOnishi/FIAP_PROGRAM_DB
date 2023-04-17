@@ -438,22 +438,29 @@ ON(sup.employee_id = sub.manager_id);
 -- LEVEL - pseudocoluna que indica a linha da hierarquia
 
 --Árvore de hierarquia  percorrida de baixo para cima:
-SELECT employee_id, last_name, job_id, manager_id, LEVEL -- level 1 no Kochhar porque começa nele, ele é o primeiro nessa hierarquia
+SELECT employee_id, last_name, job_id, manager_id, LEVEL, PRIOR employee_id, PRIOR manager_id -- level 1 no Kochhar porque começa nele, ele é o primeiro nessa hierarquia
 FROM   employees
 START  WITH  last_name = 'Kochhar' -- condição para início da hierarquia
 CONNECT BY PRIOR manager_id = employee_id ; -- conexão pela prioridade, olhando para o manager_id prioritariamente, olhamos os superiores
 -- olhando da FK para a PK
 -- procura o manager primeiro
 
+SELECT employee_id, last_name, job_id, manager_id, LEVEL, PRIOR employee_id, PRIOR manager_id
+FROM   employees
+START  WITH  last_name = 'Sciarra'
+CONNECT BY PRIOR manager_id = employee_id ;
+
 --Árvore  percorrida de cima para baixo:
 SELECT  last_name||' Responde para '|| 
-PRIOR   last_name "Árvore de Cima para Baixo",  
+PRIOR   last_name "Árvore de Cima para Baixo", PRIOR employee_id, PRIOR manager_id, employee_id, manager_id,
 LEVEL   "lével"
 FROM    employees
 START   WITH employee_id = 100
 CONNECT BY PRIOR employee_id = manager_id; -- olhamos para os abaixo da hierarquia
 -- olhando da PK para a FK
 -- procura o employee primeiro
+
+-- PRIOR seria a linha acima na hierarquia
 
 -- a ordem depende da dependência relacional
 -- o PRIOR indica quem qual dependência vc vai olhar primeiro
