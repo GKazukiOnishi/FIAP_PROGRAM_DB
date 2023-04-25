@@ -1,0 +1,75 @@
+PLSQL
+	Linguagem de programação do Oracle que funciona com SQL nativamente 
+	
+	Migração de dados é muito mais fácil que de código
+	
+	PLSQL incompatível com Transactional SQL
+	
+	Se migrar aplicação é complicado
+	IBM com seu DB2 compatibilizou com o PLSQL
+	PLSQL é a mais utilizada do mercado
+	se o concorrente compatibilizou ...
+	
+	Colocar lógica no banco?
+	Geralmente fica o servidor da aplicação toda sobrecarregada
+	Por que não aproveitamos a máquina do oracle para isso também?
+	Aliás, ele é compatível com Java completamente
+	Podemos armazenar Java e vai performar bem
+	
+	SGA
+		Shared Pool
+		Stream Pool
+		DBBUF Cache
+		Redo Log Buffer
+		Large Pool
+		Java Pool
+		
+		RAM
+	
+	PLSQL é muito próximo do SQL, roda rápido e tem recursos para isso
+	
+	Então hoje em dia resolvem o problema no banco e no back
+	
+	Estrutura de Programação + SQL = PLSQL
+	
+	Benefícios do PLSQL:
+		Integração de construções procedurais com SQL
+		Performance melhorada
+		
+		Quando algo é executado, o bloco inteiro é processado assim como cada instrução SQL era processada antes
+		Não são várias chamadas
+		
+		Tem um Engine de PLSQL e uma para SQL
+		Para processar um bloco ele vai trocando o contexto de PL para SQL
+		O que causa perda de performance
+		
+		Tuning é evitar essas trocas de contexto
+	
+	DECLARE (Opcional)
+	...
+	BEGIN
+	...
+	EXCEPTION (Opcional)
+	...
+	END;
+	
+	Tipos de blocos:
+		Anonymous
+		Procedure
+		Function
+	Procedure e Function são nomeados
+	Function tem retorno
+	
+	Temos também a Package e a Trigger
+	Package permite agrupar blocos de código
+	Com controles para visibilidade
+	
+	Trigger - Bloco de código disparado por evento, exemplo: ao atualizar campo x da tabela y
+	
+Variáveis:
+	
+	nomes válidos podem conter
+		a, 2, $, _, #
+	Mas tudo deve começar por LETRA
+	
+	máx 30 caracteres até versão 12.1, depois aceita ate´128
