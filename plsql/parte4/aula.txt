@@ -1,0 +1,14 @@
+IF, ELSIF, ELSE, END IF
+
+Expressão CASE - Termina com END;
+	Pode ser atribuído a algo
+
+Instrução CASE - Termina com END CASE;
+	Executa algo em cada situação
+
+Loops:
+	For -> sabemos quantas vezes vai iterar
+	While -> roda verificando inicialmente a condição
+	Basic loop / Do while -> roda primeiro, depois verifica
+	
+	
