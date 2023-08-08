@@ -1,0 +1,29 @@
+1-
+Crie um bloco PL/SQL que insira um departamento na tabela de departments.
+
+Solicite ao usuário que informe o nome do departamento.
+
+Utilizando um sequência a seguir , insira o código do departamento.
+
+create sequence seq_dept
+start with 290
+increment by 10;
+
+Para as colunas código da localidade e código do gerente, informe null.
+============================================================================================
+2-
+Crie um bloco PL/SQL que solicite ao usuário o código do funcionário. 
+
+Para cada funcionário deverá ser exibida as seguintes informações:
+LAST_NAME	SALARY		STAR
+KING		9000		*********
+MEG		2100		**
+PETTER		3700		****
+
+Para exibir a coluna STAR você deve considerar que, a cada US$ 1000 do salário do empregado ele irá receber um *.
+
+
+
+************************
+**********
+**********
