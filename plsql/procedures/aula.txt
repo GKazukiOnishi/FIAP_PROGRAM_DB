@@ -1,0 +1,18 @@
+PROCEDIMENTOS
+	Forma de nomear um bloco de PLSQL
+	Ele não deve ter um retorno (nesse caso poderia ser uma Function). Obs: Se forem 2 ou mais é procedimento também
+	Function pode ser usada em queries SQL
+	
+	Basta adicionar CREATE OR REPLACE PROCEDURE nomeProcedure(parametros) IS
+	...Bloco de PLSQL sem a cláusula DECLARE
+	
+	Ele pode receber argumentos, possibilitando ter entradas para alterar as variáveis
+	
+	Eles são compilados e ficam no banco registrados, não precisam ser recompilados na execução
+	
+	Parâmetros IN, OUT e INOUT
+	
+	Chamadas usando parâmetros nomeados (=>)
+	
+	obs: Falta de tratamento de exceção para o bloco inteiro, a não ser que seja tratado
+	
