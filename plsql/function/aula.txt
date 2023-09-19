@@ -1,0 +1,23 @@
+Functions
+	select last_name, upper(last_name) from employees;
+	upper -> função de única linha, pega um dado e retorna um valor
+	
+	select sum(salary) from employees
+	sum -> função de grupo, pega várias linhas agrupadas e faz algo para obter um retorno
+	
+	a função simples de única linha é a mais fácil, só chamar e pegar o retorno
+	
+	função:
+		* DEVE retornar um valor
+		* assim como procedure é armazenado como objeto de banco de dados, é compilado e fica pronto para ser usado (não precisa do PARSE, mais performático)
+				quanto mais usado, mais tratado e otimizado pelo oracle para sua utilização
+				o backup do banco leva ele junto
+		* sintaxe
+			CREATE OR REPLACE FUNCTION name RETURN dataType AS/IS [declarações] BEGIN [bloco lógico] RETURN algo; END name;
+				na definição do retorno não precisa de tamanho do tipo de dado
+		* quando a função encontra nenhum retorno, caso chame ela no SELECT vai retornar null, então sempre vem um retorno
+		* quando chama de outra forma, por exemplo, em um execute, vai ocorrer exception
+			proc 1 chama a 2, a 1 toma erro
+			proc 1 chama a 2, se tratar o erro, a 1 pode rodar ainda
+			por isso se usarmos um dbms_output.put_line com a func na impressão, vai ocorrer exception
+		* Function mesmo sem RETURN vai compilar, porém ao executar vai causar erro
