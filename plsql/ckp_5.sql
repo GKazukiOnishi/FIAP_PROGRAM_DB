@@ -117,15 +117,24 @@ CREATE OR REPLACE FUNCTION f_ckp_5_valida_cnpj(p_cnpj VARCHAR2)
   v_soma NUMBER(3) := 0;
 BEGIN
   FOR v_digito IN 0..1 LOOP
-  END LOOP;
-  FOR v_i IN REVERSE 1..(LENGTH(p_cnpj) - 2) LOOP
-    v_soma := v_soma + (SUBSTR(p_cnpj, v_i, 1) * v_multiplicador);
+    FOR v_i IN REVERSE 1..(LENGTH(p_cnpj) - 2 + v_digito) LOOP
+      dbms_output.put_line(SUBSTR(p_cnpj, v_i, 1));
+      v_soma := v_soma + (SUBSTR(p_cnpj, v_i, 1) * v_multiplicador);
+      
+      v_multiplicador := v_multiplicador - 1;
+      IF v_multiplicador = 1 THEN
+        v_multiplicador := 9;
+      END IF;
+    END LOOP;
     
-    v_multiplicador := v_multiplicador - 1;
-    IF v_multiplicador = 1 THEN
-      v_multiplicador := 9;
+    dbms_output.put_line('A  ' || MOD(v_soma, 11));
+    IF SUBSTR(p_cnpj, (LENGTH(p_cnpj) - 1 + v_digito), 1) <> MOD(v_soma, 11) THEN
+      RETURN FALSE;
     END IF;
+    
+    v_soma := 0;
   END LOOP;
+  RETURN TRUE;
 END f_ckp_5_valida_cnpj;
 /
 
@@ -143,6 +152,8 @@ BEGIN
     
     dbms_output.put_line('Teste Cartão ' || '30111198763335' || ' ' || f_ckp_5_testa_boolean(f_ckp_5_valida_cartao('30111198763335')));
     dbms_output.put_line('Teste Cartão ' || '3412123412341238' || ' ' || f_ckp_5_testa_boolean(f_ckp_5_valida_cartao('3412123412341238')));
+    
+    dbms_output.put_line('Teste CNPJ ' || '18781203000128' || ' ' || f_ckp_5_testa_boolean(f_ckp_5_valida_cnpj('18781203000128')));
 END;
 /
 
