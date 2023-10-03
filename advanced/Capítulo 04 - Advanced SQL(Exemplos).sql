@@ -538,6 +538,26 @@ WHERE  dept_total >( SELECT dept_avg
                      FROM   avg_cost )
 ORDER BY department_name;
 
+SELECT last_name, salary, department_id, employee_id, manager_id
+FROM employees
+START WITH last_name = 'Mourgos'
+CONNECT BY PRIOR employee_id = manager_id;
+
+SELECT last_name
+FROM employees
+WHERE last_name != 'Lorentz'
+START WITH last_name = 'Lorentz'
+CONNECT BY PRIOR manager_id = employee_id;
+
+COLUMN name FORMAT A20
+
+SELECT LPAD(last_name, LENGTH(last_name)+(LEVEL*2)-2,'_')  name,manager_id mgr, department_id deptno
+FROM employees
+START WITH last_name = 'Kochhar'                 
+CONNECT BY PRIOR employee_id = manager_id
+/
+
+
 -- se queremos melhorar a performance, uma opção é os índices, mas precisamos lembrar que só vai ajudar se a cardinalidade não for muito alta
 -----------------------------------------------------------------
 
