@@ -12,6 +12,8 @@ SELECT * FROM
 EMPLOYEES_INCREASE_ALLOWED;
 /
 
+-- EXE: Alterar para ser mais performático
+
 CREATE OR REPLACE PROCEDURE check_eligibility
    (p_employee_id     IN number
    ,p_increase_pct_in IN NUMBER
