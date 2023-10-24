@@ -114,4 +114,12 @@ Performance
 		   end loop;
 		end;
 		/
-			
+	
+A ideia é refletir
+	precisamos de cursor?
+		vai usar dml -> FOR ALL
+		vai usar select -> BULK COLLECT
+		
+	Depende de N fatores, processador, massa, memória etc.
+	
+	
