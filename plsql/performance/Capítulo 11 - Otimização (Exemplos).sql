@@ -267,3 +267,55 @@ begin
 end;
 /
 ----------------------------------------------------------------------------------------------
+
+
+exec DBMS_OUTPUT.ENABLE(null);
+set serverout on
+declare
+   type part_t is record (
+    num parts1.pnum%type,
+    name   parts1.pname%type);
+    
+   type part_tbl_t is table of part_t
+   index by pls_integer;
+
+   l_part part_tbl_t;
+ 
+     t1  INTEGER;
+     t2  INTEGER;
+begin
+ t1 := DBMS_UTILITY.get_time;
+   select pnum,pname
+   BULK COLLECT INTO  l_part
+   from parts1;
+  t2 := DBMS_UTILITY.get_time;  
+   for indx in 1..l_part.count LOOP
+       dbms_output.put_line(l_part(indx).num || ' ' || l_part(indx).name);
+   end loop;
+   
+     DBMS_OUTPUT.PUT_LINE('Execution Time (secs)');
+  DBMS_OUTPUT.PUT_LINE('---------------------');
+  DBMS_OUTPUT.PUT_LINE('BULK: ' || TO_CHAR((t2 - t1)/100));
+end;
+
+/
+---
+exec DBMS_OUTPUT.ENABLE(null);
+set serverout on
+declare
+  
+     t1  INTEGER;
+     t2  INTEGER;
+begin
+ t1 := DBMS_UTILITY.get_time;
+   for reg in (select pnum,pname from parts1) loop
+       dbms_output.put_line(reg.pnum || ' ' || reg.pname);
+   end loop;
+ t2 := DBMS_UTILITY.get_time;   
+     DBMS_OUTPUT.PUT_LINE('Execution Time (secs)');
+  DBMS_OUTPUT.PUT_LINE('---------------------');
+  DBMS_OUTPUT.PUT_LINE('CURSOR: ' || TO_CHAR((t2 - t1)/100));
+end;
+
+/
+
