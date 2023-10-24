@@ -1,0 +1,117 @@
+Performance
+	BEGIN
+	  FOR i IN 1..100 LOOP
+	    INSERT ...
+	  END LOOP;
+	END;
+	/
+	
+	Problema do bloco acima é que o FOR é controlado pelo pl/sql engine, enquanto o INSERT é pelo sql (Oracle Database Server)
+	Dessa forma, a execução fica trocando de engine toda hora, o que piora a performance
+	
+	BULK COLLECT -> aplica para seleção
+	FOR ALL -> pega coleção de dados e manipula de uma vez só
+	
+	A ideia é trocar de contexto só 1 vez
+	
+	VETOR
+		Array no Oracle começa em 1, não em 0
+		Limite inferior
+		
+		VARRAY (Array de tamanho variável), vai de 0 vazio até um tamanho máximo declarado
+			limite inferior é 1, limite superior é o número atual de elementos
+			
+			TYPE Foursome IS VARRAY(4) OF VARCHAR2(15);
+			team Foursome := Foursome('John', 'Mary', 'Alberto', 'Juanita');
+			
+			FOR i IN 1..4 LOOP
+				DBMS_OUTPUT.PUT_LINE(i || '.' || team(i));
+			END LOOP;
+			
+			team(4) := 'Yvonne';
+		
+		Útil -> PLS_INTEGER, mesma ideia de integer, mas é mais performático
+		
+		SET SERVEROUT ON
+		DECLARE 
+		   t0 number    := dbms_utility.get_time; 
+		   v_idx number := 1;  
+		BEGIN
+		   increase_salary (50, .10);
+		   dbms_output.put_line('Tempo: ' ||
+		   ((dbms_utility.get_time - t0) / 100) || ' segundos');  
+		END;
+		/ --Calcula tempo de execução para verificar problemas causados por troca de contexto
+	
+	FOR ALL	
+		--Exemplo DELETE com FORALL 
+		DROP TABLE employees_temp;
+		CREATE TABLE employees_temp AS SELECT * FROM employees;
+
+		DECLARE
+		  TYPE NumList IS VARRAY(20) OF NUMBER;
+		  depts NumList := NumList(10, 30, 70);  -- department numbers
+		BEGIN
+		  FORALL i IN depts.FIRST..depts.LAST -- Do primeiro ao último, de uma só vez vai fazer o delete, sem ter uma troca de contexto por iteração
+			DELETE FROM employees_temp
+			WHERE department_id = depts(i);
+		END;
+		/
+		
+		No fundo o que ele vai fazer é
+		
+		DELETE FROM employees_temp
+		WHERE department_id = :b1;
+		
+		--parse
+		--bind
+		--fetch
+		--execute
+		
+		Nisso, ele vai dar o parse 1 só vez
+		Nas outras ele só dá o bind e executa
+		O segredo é usar array com FOR ALL para ele reaproveitar trocas de contexto
+		
+	TABLE
+		TYPE NumTab IS TABLE OF parts1.pnum%TYPE INDEX BY PLS_INTEGER; --Declara uma tabela e indexa ela
+		TYPE NameTab IS TABLE OF parts1.pname%TYPE INDEX BY PLS_INTEGER;
+		pnums   NumTab;
+		pnames  NameTab;
+		
+		-- Isso são collections, cria uma para cada coluna
+		
+		Outra forma
+		
+		type emp_t is record (
+			empid employees.employee_id%type,
+			sal   employees.salary%type);
+			
+		type emp_tbl_t is table of emp_t index by pls_integer;
+		
+	BULK COLLECT
+	
+		set serverout on
+		declare
+		   type emp_t is record (
+			empid employees.employee_id%type,
+			sal   employees.salary%type);
+			
+		   type emp_tbl_t is table of emp_t
+		   index by pls_integer;
+		
+		   l_emp emp_tbl_t;
+		 
+		   v_employee_id employees.employee_id%type;
+		   v_salary      employees.salary%type;
+		begin
+		   select employee_id, salary
+		   BULK COLLECT INTO  l_emp -- Bem mais performático que usar cursor e ficar trocando contexto
+		   from employees
+		   where department_id=90;
+		   
+		   for indx in 1..l_emp.count LOOP
+			   dbms_output.put_line(l_emp(indx).empid || ' ' || l_emp(indx).sal);
+		   end loop;
+		end;
+		/
+			
