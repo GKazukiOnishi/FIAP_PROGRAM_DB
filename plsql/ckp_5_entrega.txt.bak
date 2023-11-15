@@ -5,8 +5,8 @@ RM 87843 - Gustavo Costa Pereira
 RM 88000 - Vitor Ramos Santos de Faria
 
 Functions criadas - RM de quem entregou 87182
-	f_ckp_5_valida_cpf;
-	f_ckp_5_valida_rg;
-	f_ckp_5_valida_cartao;
-	f_ckp_5_valida_cnpj;
-	f_ckp_5_valida_titulo_eleitoral;
+	rm87182.f_ckp_5_valida_cpf;
+	rm87182.f_ckp_5_valida_rg;
+	rm87182.f_ckp_5_valida_cartao;
+	rm87182.f_ckp_5_valida_cnpj;
+	rm87182.f_ckp_5_valida_titulo_eleitoral;
